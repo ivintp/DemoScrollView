@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     
     var color: [UIColor] = [UIColor.red, UIColor.green, UIColor.blue, UIColor.black, UIColor.yellow]
     var index = 0
-    var totalNumbers = 10
+    var totalNumbers = 20
    
     override func viewDidLoad() {
         super.viewDidLoad()
