@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ScrollViewController: UIViewController, UIScrollViewDelegate {
+class ScrollViewController: UIViewController{
     
     @IBOutlet var mainView: UIView!
     var bottomView = UIView()
@@ -74,22 +74,21 @@ class ScrollViewController: UIViewController, UIScrollViewDelegate {
     func selector(){
         self.leftButton.addTarget(self, action: #selector(buttonLeftConfiguration), for: .touchUpInside)
         self.rightButton.addTarget(self, action: #selector(buttonRightConfiguration), for: .touchUpInside)
+        self.pageControl.addTarget(self, action: #selector(pageControlAction), for: .valueChanged)
     }
-    
+    @objc func pageControlAction(_ sender: UIPageControl){
+        index = sender.currentPage
+        updateButton(index)
+    }
     @objc func buttonLeftConfiguration(){
         index -= 1
-        pageControl.currentPage = index
         scrollView.contentOffset.x = self.view.bounds.width*CGFloat(index)
-        leftButton.isEnabled = index != 0
-        rightButton.isEnabled = true
+        updateButton(index)
         self.bottomView.addSubview(leftButton)
     }
     @objc func buttonRightConfiguration(){
         index += 1
-        pageControl.currentPage = index
-        scrollView.contentOffset.x = self.view.bounds.width*CGFloat(index)
-        rightButton.isEnabled = index != totalItems-1
-        leftButton.isEnabled = true
+        updateButton(index)
         self.bottomView.addSubview(rightButton)
     }
     func configurePageControl() {
@@ -103,9 +102,18 @@ class ScrollViewController: UIViewController, UIScrollViewDelegate {
         self.pageControl.pageIndicatorTintColor = UIColor.red
         self.pageControl.currentPageIndicatorTintColor = UIColor.blue
     }
+   
+}
+extension ScrollViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         
         index = Int((scrollView.contentOffset.x / scrollView.frame.size.width).rounded())
+       updateButton(index)
+        }
+    func updateButton(_ index: Int){
         pageControl.currentPage = index
+        scrollView.contentOffset.x = self.view.bounds.width*CGFloat(index)
+        rightButton.isEnabled = index != totalItems-1
+        leftButton.isEnabled = index != 0
     }
 }
